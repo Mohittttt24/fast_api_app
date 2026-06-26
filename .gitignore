@@ -1,0 +1,2 @@
+*.pyc
+env # restricting virtual enviroment from git hub
