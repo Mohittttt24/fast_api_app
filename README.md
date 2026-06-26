@@ -1,10 +1,10 @@
+# DAY 2
 # fast_api_app
 
-
 # creating fastapi application
-## git add . -> stage changed means commit
-## git commit -m 'test git' -> comitting the changes
-## git push -> add to git hub  
+## git add .                  -> stage changed means commit
+## git commit -m 'test git'   -> comitting the changes
+## git push                   -> add to git hub  
 
 # error codes
 ### 200 ok
@@ -19,10 +19,18 @@
 ### 500 internal server error
 
 # Architecture of fastapi application
-### Model - database table
-### Router - routes request to controllers
-### controller - controller logic
-### Service -- business logic
-### repository -- data access layer
-### midleware -- request processing pipline
-### schema -- pydantic models for validation
+### Model         -- database table
+### Router        -- routes request to controllers
+### controller    -- controller logic
+### Service       -- business logic
+### repository    -- data access layer
+### midleware     -- request processing pipline
+### schema        -- pydantic models for validation
+
+# Constrains in DataBase
+### Primary Key
+### Forigen Key
+### Not Null
+### Check 
+### Unique
+### Default
