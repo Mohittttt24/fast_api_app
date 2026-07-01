@@ -1,0 +1,90 @@
+// import Welcome from "./components/Welcome";
+import NavBar from "./components/NavBar";
+import CompanyCard from "./components/CompanyCard";
+import JobCard from "./components/JobCard";
+import Footer from "./components/Footer";
+import {useEffect,useState} from "react";
+import { getCompanies,updateCompany,deleteCompany,createCompany } from "./Services/CompanyServices";
+import type {Company} from "../types/company"
+
+function App(){
+  const [loading,setLoading] = useState(true);
+  const [error,setError] = useState<Error | null>(null)
+  const [companies,setCompanies] = useState<Company[]>([]);
+
+  async function fetchCompanies() {
+    setLoading(true);
+    try {
+      const companies = await getCompanies();
+      setCompanies(companies);
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error : new Error("Failed to fetch companies"));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleEdit(company:Company){
+    try{
+      const updatedCompany = await updateCompany(company.id,company);
+      setCompanies(prev =>
+        prev.map(company =>
+          company.id === updatedCompany.id ? updatedCompany : company
+        )
+      );
+    }catch(error: unknown){
+      setError(error instanceof Error ? error : new Error("Failed to update company"));
+    }
+  }
+
+  async function handleDelete(id:number){
+    try{
+      await deleteCompany(id);
+      setCompanies(prev =>
+        prev.filter(company => company.id !== id)
+      );
+    }catch(error: unknown){
+      setError(error instanceof Error ? error : new Error("Failed to delete company"));
+    }
+  }
+
+  async function handleAdd(company:Company){
+    try{
+      const newCompany = await createCompany(company);
+      setCompanies(prev => [...prev, newCompany]);
+    }catch(error: unknown){
+      setError(error instanceof Error ? error : new Error("Failed to add company"));
+    }
+  }
+
+
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
+  
+  if(loading){
+    return <div>Loading...</div>
+  }
+
+  if(error){
+    return <div>Error: {error.message}</div>
+  }
+  
+  return(
+    <>
+    <NavBar />
+    {/* <Welcome /> */}
+    <br />
+    <CompanyCard 
+    companies={companies}
+    onEdit={handleEdit}
+    onDelete={handleDelete}
+    onAdd={handleAdd}
+    />
+    <JobCard />
+    <Footer />
+    </>
+  )
+}
+
+export default App
