@@ -4,6 +4,7 @@ from database import get_db
 from models.users import User
 from schemas.users import UserCreate
 from until import hash_password
+from utils.security import verify_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -14,13 +15,22 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed_password = hash_password(user.password)
-    new_user = User(
+    db_user = User(
         name=user.name,
         email=user.email,
         password=hashed_password,
         role=user.role
     )
-    db.add(new_user)
+    db.add(db_user)
     db.commit()
-    db.refresh(new_user)
-    return new_user
+    db.refresh(db_user)
+    return db_user
+
+@router.post("/login",response_model=UserResponse)
+def login_user(user: UserCreate, db: Session = Depends(get_db)):
+    existing_user = db.query(User).filter(User.email == user.email).first()
+    if not existing_user:
+        raise HTTPException(status_code=404, detail="user not found")
+    if not verify_password(user.password, existing_user.password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    return existing_user
