@@ -5,3 +5,13 @@ class UserBase(BaseModel):
     email: str
     password: str
     role: str
+class UserCreate(UserBase):
+    pass
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+    role: str
+
+    class Config:
+        orm_mode = True
