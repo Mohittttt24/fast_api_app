@@ -13,8 +13,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
 
 app.include_router(company.router)
 app.include_router(job.router)

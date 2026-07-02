@@ -15,3 +15,7 @@ class UserResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class login_User(BaseModel):
+    email: str
+    password: str
